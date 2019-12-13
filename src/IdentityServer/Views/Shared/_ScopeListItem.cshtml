@@ -1,6 +1,5 @@
 ﻿@model ScopeViewModel
-
-<li class="list-group-item">
+<div class="item">
     <label>
         <input class="consent-scopecheck"
                type="checkbox"
@@ -15,20 +14,38 @@
                    name="ScopesConsented"
                    value="@Model.Name" />
         }
-        <strong>@Model.DisplayName</strong>
-        @if (Model.Emphasize)
+
+        @if (Model.DisplayName == "Your user identifier")
         {
-            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            <span>Din brukeridentite</span>
         }
+        else if (Model.DisplayName == "User profile")
+        {
+            <span>Brukerprofil</span>
+        }
+        else
+        {
+            @Model.DisplayName
+        }
+
+
     </label>
     @if (Model.Required)
     {
-        <span><em>(required)</em></span>
+        <span>(obligatorisk)</span>
     }
     @if (Model.Description != null)
     {
-        <div class="consent-description">
-            <label for="scopes_@Model.Name">@Model.Description</label>
-        </div>
-    }
-</li>
+            <label for="scopes_@Model.Name">
+                @if (Model.Description == "Your user profile information (first name, last name, etc.)")
+                {
+                    <span>(fornavn, etternavn ol.)</span>
+                }
+                else
+                {
+                    @Model.Description
+                }
+
+            </label>
+     }
+</div>

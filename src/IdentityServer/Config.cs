@@ -23,12 +23,12 @@ namespace IdentityServer
             };
         }
 
-        public static IEnumerable<ApiResource> GetApis()
+        public static IEnumerable<ApiResource> GetApis(IConfiguration configuration)
         {
             return new List<ApiResource> 
             {
-                new ApiResource("bhgapp", "Barnehage Application"),
-                new ApiResource("bhgadmin", "Barnehage Application Administration")
+                new ApiResource("bhgapp", $"{configuration["BhgApp:ClientName"]}"),
+                new ApiResource("bhgadmin", $"{configuration["BhgAdmin:ClientName"]}")
             };
         }
 
@@ -70,8 +70,8 @@ namespace IdentityServer
                 // Barnehage Application Client - IDporten
                 new Client
                 {
-                    ClientId = "5716ae6a-4995-4830-89a2-0fd61426aba5",
-                    ClientName = "Barnehage Application",
+                    ClientId =  $"{configuration["BhgApp:ClientId"]}",//"5716ae6a-4995-4830-89a2-0fd61426aba5",
+                    ClientName = $"{configuration["BhgApp:ClientName"]}",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     RequireClientSecret = false,
@@ -111,8 +111,8 @@ namespace IdentityServer
                 // Barnehage Application Administration Client - AAD
                 new Client
                 {
-                    ClientId = "d470c053-1185-4cea-8d10-91ac6e27391e",
-                    ClientName = "Barnehage Application Administration",
+                    ClientId =  $"{configuration["BhgAdmin:ClientId"]}",//"d470c053-1185-4cea-8d10-91ac6e27391e",
+                    ClientName = $"{configuration["BhgAdmin:ClientName"]}",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     RequireClientSecret = false,

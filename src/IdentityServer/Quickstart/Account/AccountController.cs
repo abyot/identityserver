@@ -219,6 +219,8 @@ namespace IdentityServer
             }
 
             return View("LoggedOut", vm);
+
+            //return Redirect(vm.PostLogoutRedirectUri);
         }
 
         [HttpGet]

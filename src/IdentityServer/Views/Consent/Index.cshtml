@@ -1,73 +1,53 @@
+
+<link href="@Url.Content("~/css/Consent.css")" rel="stylesheet" type="text/css" />
+
 @model ConsentViewModel
 
-<div class="page-consent">
-    <div class="row page-header">
-        <div class="col-sm-10">
-            @if (Model.ClientLogoUrl != null)
-            {
-                <div class="client-logo"><img src="@Model.ClientLogoUrl"></div>
-            }
+<div class="main">
+    <partial name="_ValidationSummary" />
+
+    <form asp-action="Index" class="consent-form">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="contentWrapper">
             <h1>
                 @Model.ClientName
-                <small>is requesting your permission</small>
+                ønsker tilatelse til følgende
             </h1>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-8">
-            <partial name="_ValidationSummary" />
-            
-            <form asp-action="Index" class="consent-form">
-                <input type="hidden" asp-for="ReturnUrl" />
-
-                <div>Uncheck the permissions you do not wish to grant.</div>
-                
+            <div class="main-info">
+                <p>Fjern avkryssning der du ikke ønsker å gi tilgang</p>
                 @if (Model.IdentityScopes.Any())
                 {
-                    <div class="panel panel-default consent-buttons">
-                        <div class="panel-heading">
-                            <span class="glyphicon glyphicon-user"></span>
-                            Personal Information
-                        </div>
-                        <ul class="list-group">
-                            @foreach (var scope in Model.IdentityScopes)
-                            {
-                                <partial name="_ScopeListItem" model="@scope" />
-                            }
-                        </ul>
+                    <div class="itemWrapper">
+                        <h2>Personlig informasjon</h2>
+                        @foreach (var scope in Model.IdentityScopes)
+                        {
+                            <partial name="_ScopeListItem" model="@scope" />
+                        }
                     </div>
                 }
 
                 @if (Model.ResourceScopes.Any())
                 {
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="glyphicon glyphicon-tasks"></span>
-                            Application Access
-                        </div>
-                        <ul class="list-group">
-                            @foreach (var scope in Model.ResourceScopes)
-                            {
-                                <partial name="_ScopeListItem" model="scope" />
-                            }
-                        </ul>
+                    <div class="itemWrapper">
+                        <h2>Applikasjonstilgang</h2>
+                        @foreach (var scope in Model.ResourceScopes)
+                        {
+                            <partial name="_ScopeListItem" model="scope" />
+                        }
                     </div>
                 }
-
                 @if (Model.AllowRememberConsent)
                 {
-                    <div class="consent-remember">
+                    <div class="">
                         <label>
                             <input class="consent-scopecheck" asp-for="RememberConsent" />
-                            <strong>Remember My Decision</strong>
+                            Husk svarene mine
                         </label>
                     </div>
                 }
-
-                <div class="consent-buttons">
-                    <button name="button" value="yes" class="btn btn-primary" autofocus>Yes, Allow</button>
-                    <button name="button" value="no" class="btn">No, Do Not Allow</button>
+                <div class="ntnWrapper">
+                    <button name="button" value="yes" autofocus>Tillat</button>
+                    <button name="button" value="no">Ikke tillat</button>
                     @if (Model.ClientUrl != null)
                     {
                         <a class="pull-right btn btn-default" target="_blank" href="@Model.ClientUrl">
@@ -76,7 +56,8 @@
                         </a>
                     }
                 </div>
-            </form>
+
+            </div>
         </div>
-    </div>
+    </form>
 </div>

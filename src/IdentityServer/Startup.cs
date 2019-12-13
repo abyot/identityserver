@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
+using System.Text;
 
 namespace IdentityServer
 {
@@ -20,13 +21,13 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
 
             var builder = services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
+                .AddInMemoryApiResources(Config.GetApis(Configuration))
                 .AddInMemoryClients(Config.GetClients(Configuration))
                 .AddTestUsers(Config.GetUsers())
                 .AddProfileService<ProfileService>();
