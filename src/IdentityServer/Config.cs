@@ -70,7 +70,7 @@ namespace IdentityServer
                 // Barnehage Application Client - IDporten
                 new Client
                 {
-                    ClientId =  $"{configuration["BhgApp:ClientId"]}",//"5716ae6a-4995-4830-89a2-0fd61426aba5",
+                    ClientId =  $"{configuration["BhgApp:ClientId"]}",
                     ClientName = $"{configuration["BhgApp:ClientName"]}",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
@@ -111,7 +111,7 @@ namespace IdentityServer
                 // Barnehage Application Administration Client - AAD
                 new Client
                 {
-                    ClientId =  $"{configuration["BhgAdmin:ClientId"]}",//"d470c053-1185-4cea-8d10-91ac6e27391e",
+                    ClientId =  $"{configuration["BhgAdmin:ClientId"]}",
                     ClientName = $"{configuration["BhgAdmin:ClientName"]}",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
