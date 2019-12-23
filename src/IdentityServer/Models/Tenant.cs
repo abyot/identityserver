@@ -17,12 +17,5 @@ namespace IdentityServer.Models
         public List<Int32> Kommunenummerer { get; set; }
         public List<Int32> Organisasjonsnummerer { get; set; }
         public int Category { get; set; }
-        public Svarut Svarut { get; set; }
-    }
-
-    public class Svarut
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }
