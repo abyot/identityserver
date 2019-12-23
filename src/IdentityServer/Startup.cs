@@ -26,11 +26,12 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             X509Certificate2 certificate = GetCertificate();
 
             X509SecurityKey privateKey = new X509SecurityKey(certificate);
 
-            var jwtToken = GenerateJWT(certificate, Configuration["BhgApp3:ClientId"]);
+            var jwtToken = GenerateJWT(certificate, "BhgApp3");
 
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
 
@@ -149,8 +150,11 @@ namespace IdentityServer
             return certificate;
         }
 
-        private string GenerateJWT(X509Certificate2 certificate, string clientId)
+        private string GenerateJWT(X509Certificate2 certificate, string clientKey)
         {
+            string Audience = Configuration[$"{clientKey}:Authority"];
+            string Issuer = Configuration[$"{clientKey}:ClientId"];
+
             // Get private key from certificate
             X509SecurityKey privateKey = new X509SecurityKey(certificate);
 
@@ -177,8 +181,8 @@ namespace IdentityServer
                 Subject = new ClaimsIdentity(claims),
                 IssuedAt = now,
                 Expires = now.AddMinutes(2),
-                Audience = "https://oidc-ver1.difi.no/idporten-oidc-provider/",
-                Issuer = clientId,
+                Audience = Audience,
+                Issuer = Issuer,
 
                 SigningCredentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256)
             };
