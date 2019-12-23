@@ -5,9 +5,12 @@ using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
+using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityServer
 {
@@ -63,11 +66,11 @@ namespace IdentityServer
             };
         }
 
-        public static IEnumerable<Client> GetClients(IConfiguration configuration)
+        public static IEnumerable<Client> GetClients(IConfiguration configuration, X509Certificate2 certificate)
         {
             return new List<Client>
-            {                
-                // Barnehage Application Client - IDporten
+            {
+                // Barnehage Application Client - IDporten - kindergartenapplication(-test)
                 new Client
                 {
                     ClientId =  $"{configuration["BhgApp:ClientId"]}",
@@ -99,6 +102,98 @@ namespace IdentityServer
 
                     },
                     AllowedCorsOrigins =     { $"{configuration["BhgApp:ClientAddress"]}" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "bhgapp"
+                    }
+                },
+
+                // Barnehage Application Client - IDporten - barnehagesøknad
+                new Client
+                {
+                    ClientId =  $"{configuration["BhgApp2:ClientId"]}",
+                    ClientName = $"{configuration["BhgApp2:ClientName"]}",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    AlwaysSendClientClaims = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AllowOfflineAccess = true,
+                    AllowAccessTokensViaBrowser = true,
+
+                    EnableLocalLogin = false,
+                    IdentityProviderRestrictions = new List<string> {
+                        "idporten2"
+                    },
+
+                    RedirectUris =
+                    {
+                        $"{configuration["BhgApp2:RedirectUri"]}",
+                        $"{configuration["BhgApp2:RedirectUri"]}/index.html",
+                        $"{configuration["BhgApp2:RedirectUri"]}/callback.html",
+                        $"{configuration["BhgApp2:RedirectUri"]}/silent-renew.html"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+                        $"{configuration["BhgApp2:PostLogOutRedirectUri"]}",
+                        $"{configuration["BhgApp2:PostLogOutRedirectUri"]}/index.html"
+
+                    },
+                    AllowedCorsOrigins =     { $"{configuration["BhgApp2:ClientAddress"]}" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "bhgapp"
+                    }
+                },
+
+                // Barnehage Application Client - IDporten - Certificate
+                new Client
+                {
+                    ClientId =  $"{configuration["BhgApp3:ClientId"]}",
+                    ClientName = $"{configuration["BhgApp3:ClientName"]}",
+                    AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
+
+                    ClientSecrets =
+                    {
+                        new Secret
+                        {
+                            Type = IdentityServerConstants.SecretTypes.X509CertificateBase64,
+                            Value = Convert.ToBase64String(certificate.GetRawCertData())
+                        }
+                    },
+
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    AlwaysSendClientClaims = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AllowOfflineAccess = true,
+                    AllowAccessTokensViaBrowser = true,
+
+                    EnableLocalLogin = false,
+                    IdentityProviderRestrictions = new List<string> {
+                        "idporten3"
+                    },
+
+                    RedirectUris =
+                    {
+                        $"{configuration["BhgApp3:RedirectUri"]}",
+                        $"{configuration["BhgApp3:RedirectUri"]}/index.html",
+                        $"{configuration["BhgApp3:RedirectUri"]}/callback.html",
+                        $"{configuration["BhgApp3:RedirectUri"]}/silent-renew.html"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+                        $"{configuration["BhgApp3:PostLogOutRedirectUri"]}",
+                        $"{configuration["BhgApp3:PostLogOutRedirectUri"]}/index.html"
+
+                    },
+                    AllowedCorsOrigins =     { $"{configuration["BhgApp3:ClientAddress"]}" },
 
                     AllowedScopes =
                     {
