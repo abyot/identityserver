@@ -15,11 +15,13 @@ namespace IdentityServer
     public class ProfileService : IProfileService
     {
         private readonly string[] _claimTypesToMap = { "name", "role", "upn", "unique_name", "pid", "groups" };
-        private readonly MongoDbDataContext _dbContext = new MongoDbDataContext("TenantIdentity");
+        private readonly MongoDbDataContext _kommuneDbContext = new MongoDbDataContext("TenantIdentity");
+        private readonly MongoDbDataContext _personDbContext = new MongoDbDataContext("PersonLocation");
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             string Email = null;
+            string Pid = null;
 
             foreach (var claimType in _claimTypesToMap)
             {
@@ -31,30 +33,26 @@ namespace IdentityServer
                     {
                         Email = claim.Value;
                     }
+                    else if(claim.Type.Equals("pid"))
+                    {
+                        Pid = claim.Value;
+                    }
                 }
 
                 context.IssuedClaims.AddRange(claims);
             }
 
-            if(Email != null)
+            if( Email != null )
             {
                 FilterDefinition<Tenant> filter = Builders<Tenant>.Filter.Eq("Email", Email);
-                IEnumerable<Tenant> tenants = null;
-                using (IAsyncCursor<Tenant> cursor = await this._dbContext.GetTenants.FindAsync(new BsonDocument()))
-                {
-                    while (await cursor.MoveNextAsync())
-                    {
-                        tenants = cursor.Current;
-                    }
-                }
 
-                if( tenants.Count() > 0 )
-                {
-                    Tenant loggedInTenant = tenants.FirstOrDefault();
+                Tenant loggedInTenant = await this._kommuneDbContext.Tenant.Find(filter).FirstOrDefaultAsync();
 
+                if( loggedInTenant != null )
+                {
                     var claims = new List<Claim>();
 
-                    foreach ( var k in loggedInTenant.Kommunenummerer)
+                    foreach (var k in loggedInTenant.Kommunenummerer)
                     {
                         claims.Add(new Claim("Kommunenummerer", k.ToString()));
                     }
@@ -68,6 +66,18 @@ namespace IdentityServer
                     claims.Add(new Claim("Organisasjonsnummerer", ""));
 
                     context.IssuedClaims.AddRange(claims);
+                }
+            }
+
+            if ( Pid != null )
+            {
+                FilterDefinition<PersonLocation> filter = Builders<PersonLocation>.Filter.Eq("pid", Pid);
+
+                PersonLocation loggedInPerson = await this._personDbContext.PersonLocation.Find(filter).FirstOrDefaultAsync();
+
+                if (loggedInPerson !=null && loggedInPerson.kommunenummer > 0 )
+                {
+                    context.IssuedClaims.Add(new Claim("Kommunenummer", loggedInPerson.kommunenummer.ToString()));
                 }
             }
 

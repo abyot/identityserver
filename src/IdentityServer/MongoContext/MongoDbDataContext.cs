@@ -33,9 +33,14 @@ namespace IdentityServer.MongoContext
             get { return _database; }
         }
 
-        public IMongoCollection<Tenant> GetTenants
+        public IMongoCollection<Tenant> Tenant
         {
             get { return _database.GetCollection<Tenant>(_collectionName); }
         }
+
+        public IMongoCollection<PersonLocation> PersonLocation
+        {
+            get { return _database.GetCollection<PersonLocation>(_collectionName); }
+        }        
     }
 }
