@@ -16,6 +16,6 @@ namespace IdentityServer.Models
         public string Email { get; set; }
         public List<Int32> Kommunenummerer { get; set; }
         public List<Int32> Organisasjonsnummerer { get; set; }
-        public int Category { get; set; }
+        public Int32 Category { get; set; }
     }
 }
